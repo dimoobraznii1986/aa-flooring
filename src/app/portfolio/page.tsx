@@ -7,6 +7,7 @@ import type { ProjectDoc } from "@/lib/sanity/types";
 import { urlFor } from "@/lib/sanity/image";
 import { JsonLd, breadcrumbSchema } from "@/lib/seo/jsonld";
 import { absoluteUrl } from "@/lib/utils";
+import { asset } from "@/lib/asset-path";
 
 export const metadata: Metadata = {
   title: "Portfolio — A&A Flooring",
@@ -87,11 +88,11 @@ export default async function PortfolioPage() {
 
 function SeedGallery() {
   const items = [
-    { src: "/images/portfolio-1.jpg", title: "Hardwood install", caption: "Coquitlam · Hardwood" },
-    { src: "/images/portfolio-2.jpg", title: "Vinyl plank — basement", caption: "Burnaby · Vinyl" },
-    { src: "/images/portfolio-3.jpg", title: "Stair treads & risers", caption: "Port Moody · Stair work" },
-    { src: "/images/portfolio-4.jpg", title: "Engineered hardwood", caption: "Vancouver · Hardwood" },
-    { src: "/images/portfolio-5.jpg", title: "Custom transitions", caption: "Coquitlam · Custom millwork" },
+    { src: asset("/images/portfolio-1.jpg"), title: "Hardwood install", caption: "Coquitlam · Hardwood" },
+    { src: asset("/images/portfolio-2.jpg"), title: "Vinyl plank — basement", caption: "Burnaby · Vinyl" },
+    { src: asset("/images/portfolio-3.jpg"), title: "Stair treads & risers", caption: "Port Moody · Stair work" },
+    { src: asset("/images/portfolio-4.jpg"), title: "Engineered hardwood", caption: "Vancouver · Hardwood" },
+    { src: asset("/images/portfolio-5.jpg"), title: "Custom transitions", caption: "Coquitlam · Custom millwork" },
   ];
 
   return (

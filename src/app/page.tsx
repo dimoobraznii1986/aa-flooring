@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
+import { asset } from "@/lib/asset-path";
 
 export default function HomePage() {
   return (
@@ -38,7 +39,7 @@ export default function HomePage() {
 
           <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[var(--radius-card)]">
             <Image
-              src="/images/hero.jpg"
+              src={asset("/images/hero.jpg")}
               alt="Hardwood flooring detail — A&A Flooring"
               fill
               priority
@@ -59,7 +60,7 @@ export default function HomePage() {
             >
               <div className="relative aspect-[5/4] w-full overflow-hidden">
                 <Image
-                  src={s.image}
+                  src={asset(s.image)}
                   alt={s.name}
                   fill
                   sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
@@ -86,7 +87,7 @@ export default function HomePage() {
         <div className="grid gap-12 md:grid-cols-2 md:items-center">
           <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)]">
             <Image
-              src="/images/lifestyle-1.jpg"
+              src={asset("/images/lifestyle-1.jpg")}
               alt="Living room with newly installed hardwood floor"
               fill
               sizes="(min-width: 768px) 540px, 100vw"
@@ -148,7 +149,7 @@ export default function HomePage() {
               className="relative block aspect-square overflow-hidden rounded-[var(--radius-card)]"
             >
               <Image
-                src={`/images/portfolio-${n}.jpg`}
+                src={asset(`/images/portfolio-${n}.jpg`)}
                 alt={`A&A Flooring project ${n}`}
                 fill
                 sizes="(min-width: 1024px) 18vw, (min-width: 768px) 24vw, 50vw"

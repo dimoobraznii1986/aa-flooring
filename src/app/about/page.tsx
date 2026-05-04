@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { siteConfig } from "@/lib/site-config";
+import { asset } from "@/lib/asset-path";
 import { JsonLd, breadcrumbSchema } from "@/lib/seo/jsonld";
 import { absoluteUrl } from "@/lib/utils";
 
@@ -33,7 +34,7 @@ export default function AboutPage() {
       <section className="container-prose pb-12">
         <div className="relative aspect-[21/9] w-full overflow-hidden rounded-[var(--radius-card)]">
           <Image
-            src="/images/lifestyle-2.jpg"
+            src={asset("/images/lifestyle-2.jpg")}
             alt="Workshop scene at A&A Flooring"
             fill
             priority

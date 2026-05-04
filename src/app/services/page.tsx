@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
+import { asset } from "@/lib/asset-path";
 import { JsonLd, breadcrumbSchema } from "@/lib/seo/jsonld";
 import { absoluteUrl } from "@/lib/utils";
 
@@ -46,7 +47,7 @@ export default function ServicesPage() {
           >
             <div className="relative aspect-[16/10] w-full overflow-hidden">
               <Image
-                src={s.image}
+                src={asset(s.image)}
                 alt={s.name}
                 fill
                 sizes="(min-width: 768px) 50vw, 100vw"

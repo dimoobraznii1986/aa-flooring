@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { siteConfig, type ServiceSlug } from "@/lib/site-config";
+import { asset } from "@/lib/asset-path";
 import { servicesContent } from "@/lib/services-content";
 import { QuoteForm } from "@/components/quote-form";
 import {
@@ -75,7 +76,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
       <section className="container-prose pb-12">
         <div className="relative aspect-[21/9] w-full overflow-hidden rounded-[var(--radius-card)]">
           <Image
-            src={service.image}
+            src={asset(service.image)}
             alt={service.name}
             fill
             priority
