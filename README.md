@@ -38,6 +38,11 @@ docs/                    deliverables for the owner (GBP, cutover)
 - `npm run typecheck` — TypeScript check
 - `npm run lint` — ESLint
 
+## Strategy docs
+
+- [`docs/business-plan.md`](docs/business-plan.md) — 12-month Greater Vancouver growth plan: market analysis, top-10 competitor profiles, channel-by-channel marketing strategy with budgets, monthly roadmap, and KPIs.
+- [`docs/gbp-and-cutover.md`](docs/gbp-and-cutover.md) — Google Business Profile audit, NAP consistency sweep, and DNS cutover checklist.
+
 ## Deployment
 
 Pushed to `main` triggers a GitHub Actions workflow (`.github/workflows/deploy.yml`) that builds a static export with `NEXT_OUTPUT_MODE=export` and publishes the `out/` directory to GitHub Pages.
