@@ -1,27 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { sanityFetch } from "@/lib/sanity/client";
-import { allProjectsQuery } from "@/lib/sanity/queries";
-import type { ProjectDoc } from "@/lib/sanity/types";
-import { urlFor } from "@/lib/sanity/image";
 import { JsonLd, breadcrumbSchema } from "@/lib/seo/jsonld";
 import { absoluteUrl } from "@/lib/utils";
 import { asset } from "@/lib/asset-path";
+import { portfolioGroups, type PortfolioItem } from "@/lib/portfolio-content";
 
 export const metadata: Metadata = {
   title: "Portfolio — A&A Flooring",
   description:
-    "Recent flooring projects across the Lower Mainland — hardwood, vinyl, laminate, custom stair work.",
+    "Recent flooring projects across the Lower Mainland — engineered and solid hardwood, herringbone, vinyl, laminate, and custom stairs.",
   alternates: { canonical: "/portfolio" },
 };
 
-export default async function PortfolioPage() {
-  const projects = (await sanityFetch<ProjectDoc[]>({
-    query: allProjectsQuery,
-    tags: ["project"],
-  })) ?? [];
-
+export default function PortfolioPage() {
   return (
     <>
       <JsonLd
@@ -40,88 +32,104 @@ export default async function PortfolioPage() {
         </h1>
         <p className="mt-6 max-w-2xl text-[var(--color-muted)]">
           A selection of recent installations across Coquitlam, Burnaby,
-          Port Moody, and Vancouver.
+          Port Moody, and Vancouver. Grouped by the kind of work.
         </p>
+        <nav className="mt-8 flex flex-wrap gap-3 text-sm">
+          {portfolioGroups.map((g) => (
+            <a
+              key={g.slug}
+              href={`#${g.slug}`}
+              className="rounded-full border border-[var(--color-line)] px-4 py-1.5 hover:border-[var(--color-fg)]"
+            >
+              {g.title}
+            </a>
+          ))}
+        </nav>
       </section>
 
-      <section className="container-prose pb-24">
-        {projects.length === 0 ? (
-          <SeedGallery />
-        ) : (
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {projects.map((p) => (
-              <Link
-                key={p._id}
-                href={`/portfolio/${p.slug}`}
-                className="group block"
-              >
-                <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-line)]">
-                  {p.after ? (
-                    <Image
-                      src={urlFor(p.after).width(900).url()}
-                      alt={p.after.alt ?? p.title}
-                      fill
-                      sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover transition duration-500 group-hover:scale-[1.03]"
-                    />
-                  ) : null}
-                </div>
-                <div className="mt-4 flex items-start justify-between gap-4">
-                  <div>
-                    <p className="font-display text-xl">{p.title}</p>
-                    <p className="text-sm text-[var(--color-muted)]">
-                      {p.city?.name}
-                      {p.services?.length
-                        ? ` · ${p.services.map((s) => s.name).join(", ")}`
-                        : ""}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
+      {portfolioGroups.map((group) => (
+        <section
+          key={group.slug}
+          id={group.slug}
+          className="border-t border-[var(--color-line)] py-16 scroll-mt-24"
+        >
+          <div className="container-prose">
+            <div className="max-w-2xl">
+              <h2 className="font-display text-4xl md:text-5xl">{group.title}</h2>
+              <p className="mt-4 text-[var(--color-muted)]">{group.blurb}</p>
+            </div>
+
+            <div className="mt-10 grid auto-rows-[280px] gap-4 md:grid-cols-2 lg:grid-cols-3 md:auto-rows-[320px]">
+              {group.items.map((item, i) => (
+                <PortfolioTile key={item.src} item={item} index={i} />
+              ))}
+            </div>
           </div>
-        )}
+        </section>
+      ))}
+
+      <section className="container-prose py-20 text-center">
+        <p className="font-display text-3xl">Like what you see?</p>
+        <p className="mt-3 text-[var(--color-muted)]">
+          Tell us about your project and we&rsquo;ll come measure.
+        </p>
+        <Link
+          href="/contact"
+          className="mt-8 inline-flex rounded-full bg-[var(--color-fg)] px-6 py-3 text-sm font-medium text-white hover:bg-[var(--color-accent)]"
+        >
+          Request a quote
+        </Link>
       </section>
     </>
   );
 }
 
-function SeedGallery() {
-  const items = [
-    { src: asset("/images/portfolio-1.jpg"), title: "Hardwood install", caption: "Coquitlam · Hardwood" },
-    { src: asset("/images/portfolio-2.jpg"), title: "Vinyl plank — basement", caption: "Burnaby · Vinyl" },
-    { src: asset("/images/portfolio-3.jpg"), title: "Stair treads & risers", caption: "Port Moody · Stair work" },
-    { src: asset("/images/portfolio-4.jpg"), title: "Engineered hardwood", caption: "Vancouver · Hardwood" },
-    { src: asset("/images/portfolio-5.jpg"), title: "Custom transitions", caption: "Coquitlam · Custom millwork" },
-  ];
+function PortfolioTile({ item, index }: { item: PortfolioItem; index: number }) {
+  const featured = item.feature ?? false;
+  const className = [
+    "group relative block overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-line)]",
+    featured ? "md:col-span-2 md:row-span-2" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  if (item.type === "video") {
+    return (
+      <figure className={className}>
+        <video
+          src={asset(item.src)}
+          poster={item.poster ? asset(item.poster) : undefined}
+          controls
+          playsInline
+          preload="none"
+          className="h-full w-full object-cover"
+          aria-label={item.alt}
+        />
+        <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4 text-white">
+          <span className="text-[10px] uppercase tracking-[0.18em] text-white/80">
+            Video
+          </span>
+          <p className="font-display text-lg leading-tight">{item.title}</p>
+        </figcaption>
+      </figure>
+    );
+  }
 
   return (
-    <>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {items.map((item) => (
-          <article key={item.src} className="group">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-line)]">
-              <Image
-                src={item.src}
-                alt={item.title}
-                fill
-                sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
-                className="object-cover transition duration-500 group-hover:scale-[1.03]"
-              />
-            </div>
-            <p className="mt-4 font-display text-xl">{item.title}</p>
-            <p className="text-sm text-[var(--color-muted)]">{item.caption}</p>
-          </article>
-        ))}
-      </div>
-      <p className="mt-12 text-sm text-[var(--color-muted)]">
-        More projects, with before/after photos, are being added to this gallery as we
-        photograph recent installs. In the meantime,{" "}
-        <Link href="/contact" className="underline underline-offset-4 hover:text-[var(--color-fg)]">
-          ask for samples relevant to your project
-        </Link>
-        .
-      </p>
-    </>
+    <figure className={className}>
+      <Image
+        src={asset(item.src)}
+        alt={item.alt}
+        fill
+        sizes={featured
+          ? "(min-width: 1024px) 760px, (min-width: 768px) 100vw, 100vw"
+          : "(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"}
+        className="object-cover transition duration-500 group-hover:scale-[1.04]"
+        priority={index < 2}
+      />
+      <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4 text-white opacity-0 transition group-hover:opacity-100">
+        <p className="font-display text-lg leading-tight">{item.title}</p>
+      </figcaption>
+    </figure>
   );
 }

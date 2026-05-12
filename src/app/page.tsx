@@ -141,18 +141,24 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5">
-          {[1, 2, 3, 4, 5].map((n) => (
+        <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-5">
+          {[
+            { src: "/images/portfolio/25-naturale-white-oak-custom-waterfall-staircase.jpeg", alt: "White oak waterfall staircase" },
+            { src: "/images/portfolio/22-curved-staircase.jpg", alt: "Curved hardwood staircase" },
+            { src: "/images/portfolio/18-herringbone-installation-in-kitchen.jpeg", alt: "Herringbone hardwood in a kitchen" },
+            { src: "/images/portfolio/23-white-oak-engineered-harwood-custome-nosing-accessories.jpeg", alt: "White oak with custom nosing" },
+            { src: "/images/portfolio/01-natural-engineered-hardwood.jpeg", alt: "Natural engineered hardwood" },
+          ].map((p) => (
             <Link
-              key={n}
+              key={p.src}
               href="/portfolio"
               className="relative block aspect-square overflow-hidden rounded-[var(--radius-card)]"
             >
               <Image
-                src={asset(`/images/portfolio-${n}.jpg`)}
-                alt={`A&A Flooring project ${n}`}
+                src={asset(p.src)}
+                alt={p.alt}
                 fill
-                sizes="(min-width: 1024px) 18vw, (min-width: 768px) 24vw, 50vw"
+                sizes="(min-width: 1024px) 18vw, (min-width: 768px) 20vw, 50vw"
                 className="object-cover transition duration-500 hover:scale-[1.05]"
               />
             </Link>

@@ -40,3 +40,6 @@ sanity.types.ts
 
 # Claude Code internal
 .claude/
+
+# Raw asset originals (deployed copies live under public/images/portfolio/)
+/images/
