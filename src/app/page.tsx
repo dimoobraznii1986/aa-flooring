@@ -1,10 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
 import { asset } from "@/lib/asset-path";
+import { getReviews } from "@/lib/reviews";
 
 export default function HomePage() {
+  const reviewsBundle = getReviews();
+  const featuredReviews = reviewsBundle.reviews.slice(0, 3);
   return (
     <>
       <section className="relative">
@@ -165,6 +168,82 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      <section className="border-t border-[var(--color-line)]">
+        <div className="container-prose py-24">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.22em] text-[var(--color-muted)]">
+                Customer reviews
+              </p>
+              <h2 className="mt-3 font-display text-4xl">
+                {reviewsBundle.averageRating
+                  ? `${reviewsBundle.averageRating.toFixed(1)} on Google.`
+                  : "What customers say."}
+              </h2>
+              {reviewsBundle.averageRating ? (
+                <p className="mt-3 flex items-center gap-2 text-sm text-[var(--color-muted)]">
+                  <Stars rating={reviewsBundle.averageRating} />
+                  {reviewsBundle.ratingCount?.toLocaleString() ?? featuredReviews.length} ratings
+                </p>
+              ) : null}
+            </div>
+            <Link
+              href="/reviews"
+              className="inline-flex items-center gap-1 text-sm font-medium"
+            >
+              Read all reviews <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </div>
+
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {featuredReviews.map((r, i) => (
+              <article
+                key={`${r.author}-${i}`}
+                className="flex flex-col rounded-[var(--radius-card)] border border-[var(--color-line)] bg-white p-6"
+              >
+                <Stars rating={r.rating} />
+                <p className="mt-4 flex-1 text-sm leading-relaxed text-[var(--color-fg)]">
+                  &ldquo;{truncate(r.text, 240)}&rdquo;
+                </p>
+                <p className="mt-6 text-sm font-medium">
+                  {r.author}
+                  {r.relativeTime ? (
+                    <span className="ml-2 text-xs font-normal text-[var(--color-muted)]">
+                      {r.relativeTime}
+                    </span>
+                  ) : null}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
     </>
   );
+}
+
+function Stars({ rating }: { rating: number }) {
+  const full = Math.round(rating);
+  return (
+    <span
+      className="inline-flex items-center gap-0.5 text-[var(--color-accent)]"
+      aria-label={`${rating} out of 5 stars`}
+    >
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Star
+          key={i}
+          className="h-4 w-4"
+          fill={i < full ? "currentColor" : "none"}
+          stroke="currentColor"
+          aria-hidden
+        />
+      ))}
+    </span>
+  );
+}
+
+function truncate(s: string, max: number) {
+  if (s.length <= max) return s;
+  return s.slice(0, max - 1).trimEnd() + "…";
 }

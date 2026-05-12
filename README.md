@@ -42,6 +42,7 @@ docs/                    deliverables for the owner (GBP, cutover)
 
 - [`docs/business-plan.md`](docs/business-plan.md) — 12-month Greater Vancouver growth plan: market analysis, top-10 competitor profiles, channel-by-channel marketing strategy with budgets, monthly roadmap, and KPIs.
 - [`docs/gbp-and-cutover.md`](docs/gbp-and-cutover.md) — Google Business Profile audit, NAP consistency sweep, and DNS cutover checklist.
+- [`docs/google-reviews-setup.md`](docs/google-reviews-setup.md) — one-time setup to make the homepage pull live Google reviews via the Places API.
 
 ## Deployment
 
