@@ -133,13 +133,13 @@ export function QuoteForm({ serviceSlug, cityName }: Props) {
         type="number"
       />
 
-      <label className="grid gap-1.5 text-sm">
+      <label className="grid min-w-0 gap-1.5 text-sm">
         <span className="font-medium">Tell us about the job</span>
         <textarea
           name="message"
           rows={4}
           required
-          className="rounded-md border border-[var(--color-line)] bg-white px-3 py-2 text-sm focus:border-[var(--color-fg)] focus:outline-none"
+          className="w-full min-w-0 rounded-md border border-[var(--color-line)] bg-white px-3 py-2 text-sm focus:border-[var(--color-fg)] focus:outline-none"
           placeholder="Hardwood throughout main floor, ~800 sq ft, hoping to start in March…"
         />
       </label>
@@ -213,14 +213,14 @@ function Field({
   defaultValue?: string;
 }) {
   return (
-    <label className="grid gap-1.5 text-sm">
+    <label className="grid min-w-0 gap-1.5 text-sm">
       <span className="font-medium">{label}</span>
       <input
         type={type}
         name={name}
         required={required}
         defaultValue={defaultValue}
-        className="rounded-md border border-[var(--color-line)] bg-white px-3 py-2 text-sm focus:border-[var(--color-fg)] focus:outline-none"
+        className="w-full min-w-0 rounded-md border border-[var(--color-line)] bg-white px-3 py-2 text-sm focus:border-[var(--color-fg)] focus:outline-none"
       />
     </label>
   );
