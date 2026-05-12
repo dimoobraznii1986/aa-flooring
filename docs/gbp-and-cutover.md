@@ -129,6 +129,20 @@ NEXT_PUBLIC_RECAPTCHA_SITE_KEY=<optional, paired with above>
 
 ---
 
+## 4b. Activate the quote form (one-time, takes 30 seconds)
+
+The website's quote form posts to **Formsubmit.co**, which forwards every submission to `anaflooringltd@gmail.com`. No account, no signup, no API key.
+
+**First-time activation:**
+1. Submit a test quote on the live site (any page with a form, e.g. https://aa-flooring.ca/contact/)
+2. Andrew receives an email from Formsubmit with subject "Confirm your email address"
+3. Click the **Activate** button in that email
+4. Done — every future submission now arrives directly in the inbox with no extra step
+
+Until activation is complete, submissions don't reach the inbox. So do this on day one of the cutover.
+
+---
+
 ## 5. Things the friend still needs to provide
 
 - [ ] Logo files (SVG preferred, fallback PNG)

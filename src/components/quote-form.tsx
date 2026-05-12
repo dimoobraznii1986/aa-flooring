@@ -3,55 +3,82 @@
 import { useState } from "react";
 import { siteConfig, type ServiceSlug } from "@/lib/site-config";
 
+const FORMSUBMIT_ENDPOINT = `https://formsubmit.co/ajax/${siteConfig.nap.email}`;
+
 interface Props {
   serviceSlug?: ServiceSlug;
   cityName?: string;
 }
 
-export function QuoteForm({ serviceSlug, cityName }: Props) {
-  const [opened, setOpened] = useState(false);
+type Status = "idle" | "sending" | "success" | "error";
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+export function QuoteForm({ serviceSlug, cityName }: Props) {
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setErrorMsg(null);
+
     const form = event.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
 
-    // Honeypot — ignore bots
-    if (data.company_website) return;
+    // Honeypot — silently drop bots
+    if (data.company_website) {
+      setStatus("success");
+      return;
+    }
 
-    const service = serviceSlug
+    const serviceLabel = serviceSlug
       ? siteConfig.services.find((s) => s.slug === serviceSlug)?.name
       : "General inquiry";
+    const cityLabel = data.city || cityName || "—";
 
-    const subject = `Quote request — ${service} (${data.city || cityName || "—"})`;
+    const payload = {
+      _subject: `Quote request — ${serviceLabel} (${cityLabel})`,
+      _template: "table",
+      _captcha: "false", // we use our own honeypot
+      service: serviceLabel,
+      city: cityLabel,
+      name: data.name,
+      phone: data.phone,
+      email: data.email,
+      square_footage: data.squareFootage || "—",
+      message: data.message,
+      source_page: typeof window !== "undefined" ? window.location.pathname : "",
+    };
 
-    const lines = [
-      `Service: ${service}`,
-      `City: ${data.city || cityName || "—"}`,
-      `Name: ${data.name}`,
-      `Phone: ${data.phone}`,
-      `Email: ${data.email}`,
-      data.squareFootage ? `Approx sq ft: ${data.squareFootage}` : null,
-      "",
-      "Message:",
-      data.message,
-    ].filter(Boolean) as string[];
+    setStatus("sending");
 
-    const mailto = `mailto:${siteConfig.nap.email}?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(lines.join("\n"))}`;
+    try {
+      const res = await fetch(FORMSUBMIT_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    window.location.href = mailto;
-    setOpened(true);
+      const json = (await res.json().catch(() => ({}))) as { success?: string | boolean };
+      const ok = res.ok && (json.success === true || json.success === "true" || res.status === 200);
+      if (!ok) throw new Error("Form service returned an error.");
+
+      setStatus("success");
+      form.reset();
+    } catch (err) {
+      setStatus("error");
+      setErrorMsg(err instanceof Error ? err.message : "Network error.");
+    }
   }
 
-  if (opened) {
+  if (status === "success") {
     return (
       <div className="rounded-[var(--radius-card)] border border-[var(--color-line)] bg-white p-8">
-        <p className="font-display text-2xl">Email window opened.</p>
+        <p className="font-display text-2xl">Thanks — message sent.</p>
         <p className="mt-3 text-sm text-[var(--color-muted)]">
-          Send the prefilled email and we&rsquo;ll be in touch within one business day.
-          For anything urgent, call{" "}
+          We&rsquo;ll be in touch within one business day. For anything urgent,
+          call{" "}
           <a href={`tel:${siteConfig.nap.telephone}`} className="underline">
             {siteConfig.nap.telephoneDisplay}
           </a>
@@ -59,7 +86,7 @@ export function QuoteForm({ serviceSlug, cityName }: Props) {
         </p>
         <button
           type="button"
-          onClick={() => setOpened(false)}
+          onClick={() => setStatus("idle")}
           className="mt-6 text-sm underline underline-offset-4"
         >
           Send another
@@ -75,6 +102,7 @@ export function QuoteForm({ serviceSlug, cityName }: Props) {
   return (
     <form
       onSubmit={onSubmit}
+      noValidate
       className="grid gap-4 rounded-[var(--radius-card)] border border-[var(--color-line)] bg-white p-6 md:p-8"
     >
       <div className="grid gap-1">
@@ -122,22 +150,45 @@ export function QuoteForm({ serviceSlug, cityName }: Props) {
 
       <button
         type="submit"
-        className="rounded-full bg-[var(--color-fg)] px-6 py-3 text-sm font-medium text-white transition hover:bg-[var(--color-accent)]"
+        disabled={status === "sending"}
+        className="rounded-full bg-[var(--color-fg)] px-6 py-3 text-sm font-medium text-white transition hover:bg-[var(--color-accent)] disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Send via email
+        {status === "sending" ? "Sending…" : "Request quote"}
       </button>
 
-      <p className="text-xs text-[var(--color-muted)]">
-        Submitting opens your email app with the details prefilled. Prefer the
-        phone? Call{" "}
-        <a
-          href={`tel:${siteConfig.nap.telephone}`}
-          className="underline underline-offset-4"
-        >
-          {siteConfig.nap.telephoneDisplay}
-        </a>
-        .
-      </p>
+      {status === "error" ? (
+        <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert">
+          <p className="font-medium">We couldn&rsquo;t send that automatically.</p>
+          <p className="mt-1">
+            {errorMsg ?? "Please try again."} Or email us directly at{" "}
+            <a
+              href={`mailto:${siteConfig.nap.email}`}
+              className="underline underline-offset-4"
+            >
+              {siteConfig.nap.email}
+            </a>{" "}
+            or call{" "}
+            <a
+              href={`tel:${siteConfig.nap.telephone}`}
+              className="underline underline-offset-4"
+            >
+              {siteConfig.nap.telephoneDisplay}
+            </a>
+            .
+          </p>
+        </div>
+      ) : (
+        <p className="text-xs text-[var(--color-muted)]">
+          Prefer the phone? Call{" "}
+          <a
+            href={`tel:${siteConfig.nap.telephone}`}
+            className="underline underline-offset-4"
+          >
+            {siteConfig.nap.telephoneDisplay}
+          </a>
+          .
+        </p>
+      )}
     </form>
   );
 }
