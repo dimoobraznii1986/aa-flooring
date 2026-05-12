@@ -60,9 +60,15 @@ export function QuoteForm({ serviceSlug, cityName }: Props) {
         body: JSON.stringify(payload),
       });
 
-      const json = (await res.json().catch(() => ({}))) as { success?: string | boolean };
-      const ok = res.ok && (json.success === true || json.success === "true" || res.status === 200);
-      if (!ok) throw new Error("Form service returned an error.");
+      const json = (await res.json().catch(() => ({}))) as {
+        success?: string | boolean;
+        message?: string;
+      };
+      // Formsubmit replies 200 with success="false" + an activation message
+      // until the inbox owner clicks the "Activate Form" link once. The
+      // submission is still received in their queue, so treat 200 as success
+      // from the visitor's perspective regardless of the body flag.
+      if (!res.ok) throw new Error(json.message ?? "Form service returned an error.");
 
       setStatus("success");
       form.reset();
