@@ -1,6 +1,6 @@
 # GBP optimization & cutover checklist
 
-For Andrew at A&A Flooring. Walk this top-to-bottom before flipping DNS to the new site, then revisit weekly for the first month.
+For Atilla at A&A Flooring. Walk this top-to-bottom before flipping DNS to the new site, then revisit weekly for the first month.
 
 ## 1. Google Business Profile (GBP)
 
@@ -40,7 +40,7 @@ GBP listings with 100+ photos consistently outrank those with under 20.
   - Vinyl/laminate (≥ 5)
   - Stair work (≥ 5)
   - Custom trim/accessories (≥ 3)
-- [ ] Team photos (Andrew + crew, with consent)
+- [ ] Team photos (Atilla + crew, with consent)
 - [ ] Before/after pairs — Google explicitly surfaces these
 
 Set a recurring reminder: upload 2-3 photos a week. GBP rewards activity.
@@ -135,7 +135,7 @@ The website's quote form posts to **Formsubmit.co**, which forwards every submis
 
 **First-time activation:**
 1. Submit a test quote on the live site (any page with a form, e.g. https://aa-flooring.ca/contact/)
-2. Andrew receives an email from Formsubmit with subject "Confirm your email address"
+2. Atilla receives an email from Formsubmit with subject "Confirm your email address"
 3. Click the **Activate** button in that email
 4. Done — every future submission now arrives directly in the inbox with no extra step
 

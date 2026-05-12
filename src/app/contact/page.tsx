@@ -49,7 +49,7 @@ export default function ContactPage() {
           <ContactRow
             icon={<MessageCircle className="h-5 w-5" aria-hidden />}
             label="WhatsApp"
-            value="Message Andrew"
+            value="Message Atilla"
             href={siteConfig.social.whatsapp}
           />
           <ContactRow

@@ -497,7 +497,7 @@ If reading this whole doc feels like a lot, do these 10 things in the next 30 da
 7. [ ] Apply for Google LSA "Google Guarantee" badge.
 8. [ ] Decide on the brand-refresh investment ($300–800). Hire a wordmark designer.
 9. [ ] Set up a 24h response SLA. Put it on a sticky note above the phone.
-10. [ ] Email or text Andrew this list and have him initial each completed item back to you.
+10. [ ] Email or text Atilla this list and have him initial each completed item back to you.
 
 ---
 

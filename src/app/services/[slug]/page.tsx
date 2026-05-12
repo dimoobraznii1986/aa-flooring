@@ -120,7 +120,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
               >
                 {siteConfig.nap.telephoneDisplay}
               </a>{" "}
-              or send a message — Andrew usually replies within a day.
+              or send a message — Atilla usually replies within a day.
             </p>
           </div>
 
